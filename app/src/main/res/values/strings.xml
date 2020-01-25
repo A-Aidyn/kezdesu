@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="edit_login">Enter your login</string>
+    <string name="edit_password">Enter your password</string>
+    <string name="button_send">Send</string>
+    <string name="button_login">Login</string>
+    <string name="button_sign_up">Sign Up</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">AMUGPOagWnfVFY77qwwqT63qhF9duUZTTgPvAo7m</string>
+    <string name="back4app_client_key">x7NfMCSkmylsAYMZctNOLKJTrM7Gf94EG7cyGQET</string>
+    <color name="Black">#000000</color>
+</resources>
