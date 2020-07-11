@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar ab = getSupportActionBar();
+        // Hide the action bar
+        ab.hide();
+
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(getString(R.string.back4app_app_id))
                 // if defined
@@ -30,6 +37,15 @@ public class MainActivity extends AppCompatActivity {
         );
         // Save the current Installation to Back4App
         ParseInstallation.getCurrentInstallation().saveInBackground();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        // Check if the user has already logged in
+        if (currentUser != null) {
+            Intent intent = new Intent(MainActivity.this, UserListActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
         setContentView(R.layout.activity_main);
     }
 
@@ -115,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         if (!error) {
-                            Intent intent = new Intent(MainActivity.this, LogoutActivity.class);
+                            Intent intent = new Intent(MainActivity.this, UserListActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
@@ -127,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void signUp(View view) {
         Intent intent = new Intent(this, SignupActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 }
