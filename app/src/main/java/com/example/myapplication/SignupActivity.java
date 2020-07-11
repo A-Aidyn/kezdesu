@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.content.Intent;
@@ -44,7 +46,7 @@ public class SignupActivity extends AppCompatActivity {
                 StringBuilder validationErrorMessage = new StringBuilder("Please, insert ");
                 if (isEmpty(usernameView)) {
                     validationError = true;
-                    validationErrorMessage.append("an username");
+                    validationErrorMessage.append("a username");
                 }
                 if (isEmpty(emailView)||!isEmailValid(emailView.getText().toString())) {
                     if (validationError) {
@@ -140,8 +142,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@kaist.ac.kr");
-    }
+        return email.contains("@");
+    } // TODO: check for kaist email
 
     private void alertDisplayer(String title,String message,final boolean error){
         AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this)
