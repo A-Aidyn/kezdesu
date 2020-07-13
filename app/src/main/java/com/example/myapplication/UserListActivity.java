@@ -117,6 +117,7 @@ public class UserListActivity extends AppCompatActivity
                 });
         AlertDialog ok = builder.create();
         ok.show();
+        ok.dismiss();
     }
 
 
