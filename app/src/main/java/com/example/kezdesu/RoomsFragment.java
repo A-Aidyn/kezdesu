@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import android.content.Context;
 import android.net.Uri;
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 
@@ -59,7 +58,6 @@ public class RoomsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     static void makeToast(Context ctx, String s){
@@ -101,9 +99,9 @@ public class RoomsFragment extends Fragment {
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
+                // Do something on the left!
+                // You also have access to the original object.
+                // If you want to use it just cast it (String) dataObject
                 makeToast(getActivity().getApplicationContext(), "Left!");
             }
 
@@ -120,7 +118,6 @@ public class RoomsFragment extends Fragment {
                 Log.d("LIST", "notified");
                 i++;
             }
-
             @Override
             public void onScroll(float scrollProgressPercent) {
             }

@@ -1,13 +1,12 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
-import android.app.Notification;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.myapplication.NotificationsFragment.OnFragmentInteractionListener;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.parse.ParseException;
@@ -59,7 +58,8 @@ class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationR
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onFragmentInteraction(holder.mNotification);
+                    Uri uri = Uri.parse("example.com");
+                    mListener.onFragmentInteraction(uri);
                 }
             }
         });

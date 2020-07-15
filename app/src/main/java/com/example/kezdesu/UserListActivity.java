@@ -1,8 +1,7 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.net.Uri;
@@ -14,13 +13,11 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class UserListActivity extends AppCompatActivity
         implements
@@ -29,10 +26,13 @@ public class UserListActivity extends AppCompatActivity
             NotificationsFragment.OnFragmentInteractionListener,
             SettingsFragment.OnFragmentInteractionListener {
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userlist);
+        mAuth = FirebaseAuth.getInstance();
 
         loadFragment(new ItemFragment());
 
@@ -92,8 +92,8 @@ public class UserListActivity extends AppCompatActivity
                 dlg.setMessage("Signing Out...");
                 dlg.show();
 
-                // logging out of Parse
-                ParseUser.logOut();
+                // logging out of Firebase
+                mAuth.signOut();
 
                 alertDisplayer("So, you're going...", "Ok...Bye-bye then");
                 return true;
@@ -117,18 +117,13 @@ public class UserListActivity extends AppCompatActivity
                 });
         AlertDialog ok = builder.create();
         ok.show();
-        ok.dismiss();
     }
 
 
     // Doing sth when Item was clicked
-    public void onListFragmentInteraction(ParseUser user) {
+    public void onListFragmentInteraction(UserProfile userProfile) {
         Intent intent = new Intent(UserListActivity.this, UserProfileActivity.class);
-        intent.putExtra("userId", user.getObjectId());
         startActivity(intent);
-    }
-
-    public void onFragmentInteraction(ParseObject object) {
     }
 
     public void onFragmentInteraction(Uri uri) {

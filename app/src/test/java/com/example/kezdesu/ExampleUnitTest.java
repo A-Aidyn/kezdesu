@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import org.junit.Test;
 

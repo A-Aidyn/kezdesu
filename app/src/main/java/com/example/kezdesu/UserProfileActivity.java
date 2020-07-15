@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,34 +12,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.parse.ParseACL;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class UserProfileActivity extends AppCompatActivity {
-
-    static ParseUser user;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        String userId = getIntent().getStringExtra("userId");
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        try {
-            user = query.get(userId);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        mAuth = FirebaseAuth.getInstance();
 
         TextView name = (TextView) findViewById(R.id.user_name);
-        name.setText(user.getUsername());
+        name.setText(mAuth.getCurrentUser().getDisplayName());
 
         TextView email = (TextView) findViewById(R.id.user_email);
-        email.setText(user.getEmail());
+        email.setText(mAuth.getCurrentUser().getEmail());
 
         Button invite = (Button) findViewById(R.id.invite_button);
         invite.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +42,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public static class InvitationsDialogFragment extends DialogFragment {
         public void createInvitation(int type) {
-            ParseObject invitation = new ParseObject("Invitations");
+            /* ParseObject invitation = new ParseObject("Invitations");
             Log.i("UserProfileActivity", "current user:" + ParseUser.getCurrentUser().getUsername() + " destination user:" + user.getUsername() + " type: " + getResources().getStringArray(R.array.invitations)[type]); ;
             invitation.put("from", ParseUser.getCurrentUser().getObjectId());
             invitation.put("to", user.getObjectId());
@@ -65,13 +54,13 @@ public class UserProfileActivity extends AppCompatActivity {
             invitationACL.setReadAccess(user.getObjectId(), true);
             invitation.setACL(invitationACL);
 
-            invitation.saveInBackground();
+            invitation.saveInBackground(); */
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            /* AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Invite for a")
                     .setItems(R.array.invitations, new DialogInterface.OnClickListener() {
                         @Override
@@ -81,7 +70,8 @@ public class UserProfileActivity extends AppCompatActivity {
                     });
 
             // Create the AlertDialog object and return it
-            return builder.create();
+            return builder.create(); */
+            return null;
         }
     }
 

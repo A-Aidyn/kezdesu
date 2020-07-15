@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,17 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.myapplication.ItemFragment.OnListFragmentInteractionListener;
+import com.example.kezdesu.ItemFragment.OnListFragmentInteractionListener;
 //import com.example.myapplication.dummy.DummyContent.DummyItem;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import com.parse.CountCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import static java.lang.Math.max;
 
@@ -32,10 +25,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private static final String TAG = MyItemRecyclerViewAdapter.class.getSimpleName();
 
     //    private final List<DummyItem> mValues;
-    private final List<ParseUser> mValues;
+    private final List<UserProfile> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyItemRecyclerViewAdapter(List<ParseUser> items, OnListFragmentInteractionListener listener) {
+    public MyItemRecyclerViewAdapter(List<UserProfile> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -51,11 +44,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        ParseUser object = mValues.get(position);
+        UserProfile object = mValues.get(position);
 
         holder.mUser = object;
         holder.mIdView.setText(String.valueOf(position));
-        holder.mUsernameView.setText(object.getUsername());
+        holder.mUsernameView.setText(object.email);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +71,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public final View mView;        // Current View
         public final TextView mIdView;   // order of user in the list
         public final TextView mUsernameView; // username
-        public ParseUser mUser; // User itself
+        public UserProfile mUser; // User itself
 
         public ViewHolder(View view) {
             super(view);
