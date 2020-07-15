@@ -1,8 +1,10 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,13 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-//import com.example.myapplication.dummy.DummyContent;
-//import com.example.myapplication.dummy.DummyContent.DummyItem;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +38,9 @@ public class ItemFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private List<ParseUser> mValues;
     private OnListFragmentInteractionListener mListener;
+    private DatabaseReference mDatabase;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -74,15 +76,31 @@ public class ItemFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            final RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(mValues, mListener));
-
-//            recyclerView.setOnItemClickListener();
+            Query userList = mDatabase.child("users").orderByKey();
+            userList.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ArrayList<UserProfile> mValues = new ArrayList<UserProfile>();
+                    Log.d(TAG, "Snapshot exists!!!");
+                    for(DataSnapshot curSnapshot : snapshot.getChildren()) {
+                        UserProfile user = curSnapshot.getValue(UserProfile.class);
+                        Log.i(TAG, "user email: " + user.email);
+                        mValues.add(user);
+                    }
+                    recyclerView.setAdapter(new MyItemRecyclerViewAdapter(mValues, mListener));
+                    mValues = null;
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d(TAG, error.getDetails());
+                }
+            });
         }
         return view;
     }
@@ -91,24 +109,10 @@ public class ItemFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
-            mValues = new ArrayList<>();
-
-            ParseQuery<ParseUser> query = ParseUser.getQuery();
-
-            query.orderByAscending("username");
-            query.whereExists("email");
-            query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
-
-            try {
-                mValues.addAll(query.find());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
@@ -116,7 +120,6 @@ public class ItemFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mValues = null;
     }
 
     /**
@@ -131,6 +134,6 @@ public class ItemFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(ParseUser user);
+        void onListFragmentInteraction(UserProfile userProfile);
     }
 }

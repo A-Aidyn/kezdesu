@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
 import android.content.Context;
 import android.net.Uri;

@@ -1,40 +1,43 @@
-package com.example.myapplication;
+package com.example.kezdesu;
 
-import androidx.appcompat.app.ActionBar;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.Button;
 
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SignupActivity extends AppCompatActivity {
-
-    private EditText usernameView;
     private EditText passwordView;
     private EditText emailView;
     private EditText passwordAgainView;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        usernameView = (EditText) findViewById(R.id.username);
         emailView = (EditText) findViewById(R.id.email);
         passwordView = (EditText) findViewById(R.id.password);
         passwordAgainView = (EditText) findViewById(R.id.passwordAgain);
+
+        mAuth = FirebaseAuth.getInstance();
 
         final Button signup_button = findViewById(R.id.signup_button);
         signup_button.setOnClickListener(new View.OnClickListener() {
@@ -44,10 +47,6 @@ public class SignupActivity extends AppCompatActivity {
                 boolean validationError = false;
 
                 StringBuilder validationErrorMessage = new StringBuilder("Please, insert ");
-                if (isEmpty(usernameView)) {
-                    validationError = true;
-                    validationErrorMessage.append("a username");
-                }
                 if (isEmpty(emailView)||!isEmailValid(emailView.getText().toString())) {
                     if (validationError) {
                         validationErrorMessage.append(" and ");
@@ -80,6 +79,8 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 validationErrorMessage.append(".");
 
+                Log.i("EMAIL VALIDATION", isEmailValid(emailView.getText().toString()).toString());
+
                 if (validationError) {
                     Toast.makeText(SignupActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG).show();
                     return;
@@ -96,25 +97,31 @@ public class SignupActivity extends AppCompatActivity {
                     emailView.setError(null);
                     passwordView.setError(null);
 
-                    ParseUser user = new ParseUser();
-                    user.setUsername(usernameView.getText().toString());
-                    user.setPassword(passwordView.getText().toString());
-                    user.setEmail(emailView.getText().toString());
+                    mAuth.createUserWithEmailAndPassword(emailView.getText().toString(), passwordView.getText().toString())
+                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d("Sign Up", "createUserWithEmail:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Log.d("Sign Up", "Email sent.");
+                                            }
+                                        });
 
-                    user.signUpInBackground(new SignUpCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                dlg.dismiss();
-                                ParseUser.logOut();
-                                alertDisplayer("Account Created Successfully!", "Please verify your email before Login", false);
-                            } else {
-                                dlg.dismiss();
-                                ParseUser.logOut();
-                                alertDisplayer("Error Account Creation failed", "Account could not be created" + " :" + e.getMessage(), true);
-                            }
-                        }
-                    });
+                                        mAuth.signOut();
+                                        alertDisplayer("Account Created Successfully!", "Please verify your email before Login", false);
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w("Sign up", "createUserWithEmail:failure", task.getException());
+                                        alertDisplayer("Error Account Creation failed", "Account could not be created. " + task.getException().getMessage(), true);
+                                    }
+                                }
+                            });
+
                 } catch (Exception e) {
                     dlg.dismiss();
                     e.printStackTrace();
@@ -141,7 +148,8 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isEmailValid(String email) {
+    private Boolean isEmailValid(String email) {
+        Log.d("EMAIL", email);
         return email.contains("@");
     } // TODO: check for kaist email
 
