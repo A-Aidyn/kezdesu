@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         passwordView.setError(null);
 
-        mAuth.signInWithEmailAndPassword(emailView.getText().toString(), passwordView.getText().toString())
+        mAuth.signInWithEmailAndPassword(emailView.getText().toString().trim(), passwordView.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
