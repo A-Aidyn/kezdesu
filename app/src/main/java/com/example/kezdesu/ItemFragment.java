@@ -31,6 +31,9 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
+
+// Check master
+
 public class ItemFragment extends Fragment {
 
     private static final String TAG = ItemFragment.class.getSimpleName();
