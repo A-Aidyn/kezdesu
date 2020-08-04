@@ -24,7 +24,7 @@
             android:text="Email" />
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/reset_email_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"

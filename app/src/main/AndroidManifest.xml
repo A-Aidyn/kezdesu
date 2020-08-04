@@ -15,32 +15,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-
-        <activity android:name="com.example.kezdesu.MainActivity">
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.example.kezdesu.SignupActivity"
-            android:parentActivityName="com.example.kezdesu.MainActivity">
+            android:name=".SignupActivity"
+            android:parentActivityName=".MainActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.kezdesu.MainActivity" />
         </activity>
-
         <activity
-            android:name="com.example.kezdesu.UserListActivity"
+            android:name=".UserListActivity"
             android:windowSoftInputMode="adjustNothing" />
-
         <activity
-            android:name="com.example.kezdesu.UserProfileActivity"
-            android:parentActivityName="com.example.kezdesu.UserListActivity">
+            android:name=".UserProfileActivity"
+            android:parentActivityName=".UserListActivity">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
