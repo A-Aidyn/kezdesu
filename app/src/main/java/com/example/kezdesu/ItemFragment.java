@@ -32,8 +32,6 @@ import java.util.List;
  * interface.
  */
 
-// Check master
-
 public class ItemFragment extends Fragment {
 
     private static final String TAG = ItemFragment.class.getSimpleName();
