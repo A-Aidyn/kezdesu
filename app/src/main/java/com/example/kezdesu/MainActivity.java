@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     public void login(View view) {
         //Validating the log in data
 
-        emailView = (EditText) findViewById(R.id.reset_email_edittext);
+        emailView = (EditText) findViewById(R.id.email);
         passwordView = (EditText) findViewById(R.id.password);
 
         boolean validationError = false;
