@@ -140,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateDB(String uid, String email) {
         Log.i(TAG, "New user with uid: [" + uid + "] was added into database!");
-        UserProfile userProfile = new UserProfile("", email);
-        HashMap<String, Object> user = new HashMap<>();
-        user.put(uid, userProfile);
-        mDatabase.child("users").setValue(user);
+        UserProfile userProfile = new UserProfile(uid, "", email);
+        // HashMap<String, Object> user = new HashMap<>();
+        // user.put(uid, userProfile);
+        mDatabase.child("users/" + uid).setValue(userProfile);
     }
 
     private boolean isEmpty(EditText text) {
