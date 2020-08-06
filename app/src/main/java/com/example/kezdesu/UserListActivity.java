@@ -27,6 +27,7 @@ public class UserListActivity extends AppCompatActivity
             SettingsFragment.OnFragmentInteractionListener {
 
     private FirebaseAuth mAuth;
+    private ProgressDialog dlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class UserListActivity extends AppCompatActivity
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_logout:
-                final ProgressDialog dlg = new ProgressDialog(UserListActivity.this);
+                dlg = new ProgressDialog(UserListActivity.this);
                 dlg.setTitle("Please, wait a moment.");
                 dlg.setMessage("Signing Out...");
                 dlg.show();
@@ -102,7 +103,7 @@ public class UserListActivity extends AppCompatActivity
         }
     }
 
-    private void alertDisplayer(String title,String message){
+    private void alertDisplayer(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserListActivity.this)
                 .setTitle(title)
                 .setMessage(message)
@@ -123,9 +124,19 @@ public class UserListActivity extends AppCompatActivity
     // Doing sth when Item was clicked
     public void onListFragmentInteraction(UserProfile userProfile) {
         Intent intent = new Intent(UserListActivity.this, UserProfileActivity.class);
+        intent.putExtra("uid", userProfile.uid);
         startActivity(intent);
     }
 
     public void onFragmentInteraction(Uri uri) {
+    }
+
+    @Override
+    public void onStop() {
+        if(dlg != null) {
+            dlg.dismiss();
+            dlg = null;
+        }
+        super.onStop();
     }
 }

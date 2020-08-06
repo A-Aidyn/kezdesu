@@ -1,5 +1,6 @@
 package com.example.kezdesu;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -11,24 +12,50 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class UserProfileActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+    private static final String TAG = "UserProfileActivity";
+    private DatabaseReference mUserReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        mAuth = FirebaseAuth.getInstance();
+        String uid = getIntent().getStringExtra("uid");
+        Log.i(TAG, "UID: " + uid);
+        mUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
 
-        TextView name = (TextView) findViewById(R.id.user_name);
-        name.setText(mAuth.getCurrentUser().getDisplayName());
+        mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Get UserProfile object and use the values to update the UI
+                UserProfile user = snapshot.getValue(UserProfile.class);
+                TextView name = findViewById(R.id.user_name);
+                name.setText(user.name);
 
-        TextView email = (TextView) findViewById(R.id.user_email);
-        email.setText(mAuth.getCurrentUser().getEmail());
+                TextView email = findViewById(R.id.user_email);
+                email.setText(user.email);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Getting User failed, log a message
+                Log.w(TAG, "loadUser:onCancelled", error.toException());
+                // [START_EXCLUDE]
+                Toast.makeText(UserProfileActivity.this, "Failed to load user.",
+                        Toast.LENGTH_SHORT).show();
+                // [END_EXCLUDE]
+            }
+        });
 
         Button invite = (Button) findViewById(R.id.invite_button);
         invite.setOnClickListener(new View.OnClickListener() {
